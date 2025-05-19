@@ -2,23 +2,24 @@ import React, { useEffect, useState } from 'react';
 import {
     View,
     FlatList,
-    StyleSheet,
     TouchableOpacity,
     Text,
 } from 'react-native';
-import { Character } from '../services/Api';
-import {
-    getFavorites,
-    removeFavorite,
-} from '../utils/Storage';
-import CharacterCard from '../components/CharacterCard';
+import { Character } from '../../services/Api';
+import { getFavorites, removeFavorite } from '../../utils/Storage';
+import CharacterCard from '../../components/character-card/CharacterCard';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../App';
+import { RootStackParamList } from '../../App';
+import { FontAwesome } from '@expo/vector-icons';
+import LeftHandedSwitch from '../../components/left-handed-switch/LeftHandedSwitch';
+import { useLeftHanded } from '../../contexts/LeftHandedContext';
+import { favoriteScreenStyles } from './FavoriteScreen.styles';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Favorites'>;
 
 export default function FavoritesScreen({ navigation }: Props) {
     const [favorites, setFavorites] = useState<Character[]>([]);
+    const { leftHanded, setLeftHanded } = useLeftHanded();
 
     const loadFavorites = async () => {
         const favs = await getFavorites();
@@ -44,54 +45,26 @@ export default function FavoritesScreen({ navigation }: Props) {
     );
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Favoritos</Text>
+        <View style={favoriteScreenStyles.container}>
+            <LeftHandedSwitch onChange={setLeftHanded} />
+
+            <Text style={favoriteScreenStyles.title}>Favoritos</Text>
+
             <FlatList
                 data={favorites}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={renderItem}
                 ListEmptyComponent={
-                    <Text style={styles.empty}>Nenhum favorito encontrado.</Text>
+                    <Text style={favoriteScreenStyles.empty}>Nenhum favorito encontrado.</Text>
                 }
             />
+
             <TouchableOpacity
-                style={styles.backButton}
+                style={leftHanded ? favoriteScreenStyles.backButtonLeft : favoriteScreenStyles.backButtonRight}
                 onPress={() => navigation.goBack()}
             >
-                <Text style={styles.backButtonText}>Voltar</Text>
+                <FontAwesome name="arrow-left" size={24} color="#fff" />
             </TouchableOpacity>
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#0d0221',
-        paddingHorizontal: 10,
-        paddingTop: 20,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#FFFFFF',
-        marginBottom: 10,
-        textAlign: 'center',
-    },
-    empty: {
-        textAlign: 'center',
-        marginTop: 20,
-        color: '#ccc',
-    },
-    backButton: {
-        backgroundColor: '#4B0082',
-        margin: 20,
-        padding: 12,
-        borderRadius: 10,
-        alignItems: 'center',
-    },
-    backButtonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-    },
-});
