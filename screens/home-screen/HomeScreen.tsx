@@ -171,11 +171,7 @@ export default function HomeScreen({ navigation }: Props) {
                 hasNextPage={hasNextPage}
                 onPrevious={() => setPage((prev) => Math.max(1, prev - 1))}
                 onNext={() => setPage((prev) => prev + 1)}
-                onGoToFavorites={() =>
-                    navigation.navigate('Favorites', {
-                        animation: 'none',
-                    } as never)
-                }
+                onGoToFavorites={() => navigation.navigate('Favorites')}
                 hasFavorites={favoritesIds.length > 0}
                 leftHanded={leftHanded}
             />

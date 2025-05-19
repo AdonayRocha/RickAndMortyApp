@@ -18,7 +18,11 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Favorites" component={FavoritesScreen} />
+          <Stack.Screen
+            name="Favorites"
+            component={FavoritesScreen}
+            options={{ animation: 'none' }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </LeftHandedProvider>
